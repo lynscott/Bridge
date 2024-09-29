@@ -1,0 +1,1 @@
+{"root":["./src/App.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/Navbar.tsx","./src/lib/utils.ts","./src/pages/Home.tsx","./src/pages/Login.tsx","./src/pages/Nutrition.tsx","./src/pages/Settings.tsx","./src/pages/SplashScreen.tsx","./src/utils/storage.ts"],"errors":true,"version":"5.6.2"}
