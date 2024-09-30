@@ -108,10 +108,11 @@ const AnimatedRoutes = () => {
 const App: React.FC = () => {
   return (
     <Router>
-      <div className="flex flex-col min-h-screen bg-gray-900 text-white">
+      <div className="flex flex-col h-screen bg-gray-900 text-white">
         <Navbar />
-
-        <AnimatedRoutes />
+        <main className="flex-grow overflow-hidden">
+          <AnimatedRoutes />
+        </main>
       </div>
     </Router>
   );

@@ -25,7 +25,8 @@ export const AnimatedBackground: React.FC<{ children: React.ReactNode }> = ({
   return (
     <animated.div
       style={bgProps}
-      className="flex items-center justify-center min-h-screen"
+      // className="flex items-center justify-center min-h-screen h-full"
+      className="flex flex-col h-full w-full"
     >
       {children}
     </animated.div>

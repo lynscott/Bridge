@@ -25,4 +25,4 @@ dist-ssr
 
 
 # Keys
-supabaseClient.ts
+.env

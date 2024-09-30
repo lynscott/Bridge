@@ -4,7 +4,6 @@ import { animated, useSpring, config } from "react-spring";
 import { useGesture } from "react-use-gesture";
 import logo from "../assets/Trufit.webp";
 import { AnimatedBackground } from "../components/AnimatedBackground";
-
 const SplashScreen: React.FC = () => {
   const navigate = useNavigate();
   const [isExiting, setIsExiting] = useState(false);
@@ -51,24 +50,26 @@ const SplashScreen: React.FC = () => {
 
   return (
     <AnimatedBackground>
-      <animated.div style={{ ...introProps, ...exitProps }}>
-        <animated.div
-          {...bind()}
-          style={{
-            transform: rotate.to((r) => `rotate(${r}deg)`),
-            cursor: "pointer",
-          }}
-          className="bg-white rounded-full p-2 shadow-2xl transition-shadow hover:shadow-3xl"
-        >
-          <div className="w-48 h-48 rounded-full overflow-hidden">
-            <img
-              src={logo}
-              alt="Trufit Logo"
-              className="w-full h-full object-cover"
-            />
-          </div>
+      <div className="flex items-center justify-center w-full h-screen">
+        <animated.div style={{ ...introProps, ...exitProps }}>
+          <animated.div
+            {...bind()}
+            style={{
+              transform: rotate.to((r) => `rotate(${r}deg)`),
+              cursor: "pointer",
+            }}
+            className="bg-white rounded-full p-2 shadow-2xl transition-shadow hover:shadow-3xl"
+          >
+            <div className="w-48 h-48 rounded-full overflow-hidden">
+              <img
+                src={logo}
+                alt="Trufit Logo"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </animated.div>
         </animated.div>
-      </animated.div>
+      </div>
     </AnimatedBackground>
   );
 };
