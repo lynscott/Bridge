@@ -16,6 +16,7 @@ export const NutritionSchema = z.object({
     .describe("Activity Level (Non-exercise)"),
   preference: z
     .string()
+    .default("0.7")
     .refine(
       (val) => {
         const num = parseFloat(val);
@@ -30,6 +31,22 @@ export const NutritionSchema = z.object({
     .min(0)
     .max(168)
     .describe("How many hours per week do you typically exercise?"),
+  additional_info: z
+    .string()
+    .optional()
+    .describe(
+      `Any additional health information you'd like to provide\n 
+      For ex: past injuries, medical conditions, etc.`
+    ),
+  diet_preferences: z
+    .array(z.string().optional())
+    .default([])
+    .describe("Dietary preferences"),
+  allergies: z
+    .array(z.string().optional())
+    .default([])
+    .describe("Food allergies and intolerance"),
+  cuisines: z.array(z.string().optional()).describe("Preferred cuisine types"),
 });
 
 export type NutritionFormInputs = z.infer<typeof NutritionSchema>;
@@ -38,4 +55,9 @@ export type NutritionFormInputs = z.infer<typeof NutritionSchema>;
 export const convertFormData = (data: NutritionFormInputs) => ({
   ...data,
   preference: parseFloat(data.preference),
+  diet_preferences: Array.isArray(data.diet_preferences)
+    ? data.diet_preferences
+    : [],
+  allergies: Array.isArray(data.allergies) ? data.allergies : [],
+  cuisines: Array.isArray(data.cuisines) ? data.cuisines : [],
 });

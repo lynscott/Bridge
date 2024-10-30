@@ -1,6 +1,5 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { path } from "@tauri-apps/api";
 const host = process.env.TAURI_DEV_HOST;
 
 
@@ -20,7 +19,7 @@ export default defineConfig(async () => ({
       ? {
           protocol: "ws",
           host,
-          port: 1421,
+          port: 1430,
         }
       : undefined,
     watch: {

@@ -28,72 +28,99 @@ interface Step2FormProps {
 
 const Step2Form: React.FC<Step2FormProps> = ({ register, errors }) => {
   return (
-    <>
-      <div className="rounded-md shadow-sm -space-y-px">
-        <div>
-          <label htmlFor="goal" className="sr-only">
-            Nutritional Health Goal
-          </label>
-          <select
-            id="goal"
-            {...register("goal")}
-            className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-400 text-white bg-gray-700 rounded-t-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
-          >
-            <option value="">Select your goal</option>
-            {goalOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="previous_training" className="sr-only">
-            Previous Training Experience
-          </label>
-          <select
-            id="previous_training"
-            {...register("previous_training")}
-            className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-400 text-white bg-gray-700 focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
-          >
-            <option value="">Select your experience</option>
-            {previousTrainingOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="neat" className="sr-only">
-            Activity Level (Non-exercise)
-          </label>
-          <select
-            id="neat"
-            {...register("neat")}
-            className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-400 text-white bg-gray-700 rounded-b-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
-          >
-            <option value="">Select your activity level</option>
-            {neatOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.name}
-              </option>
-            ))}
-          </select>
-        </div>
+    <div className="space-y-6">
+      <div className="backdrop-blur-xl bg-gray-800/40 rounded-2xl p-6 border border-gray-700/30">
+        <label
+          htmlFor="goal"
+          className="block text-sm font-medium text-gray-300 mb-2"
+        >
+          Nutritional Health Goal
+        </label>
+        <select
+          id="goal"
+          {...register("goal")}
+          className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all duration-200"
+        >
+          <option value="">Select your goal</option>
+          {goalOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.name}
+            </option>
+          ))}
+        </select>
+        {errors.goal && (
+          <p className="text-red-400 text-sm mt-2">{errors.goal.message}</p>
+        )}
       </div>
-      {errors.goal && (
-        <p className="text-red-500 text-xs italic">{errors.goal.message}</p>
-      )}
-      {errors.previous_training && (
-        <p className="text-red-500 text-xs italic">
-          {errors.previous_training.message}
-        </p>
-      )}
-      {errors.neat && (
-        <p className="text-red-500 text-xs italic">{errors.neat.message}</p>
-      )}
-    </>
+
+      <div className="backdrop-blur-xl bg-gray-800/40 rounded-2xl p-6 border border-gray-700/30">
+        <label
+          htmlFor="previous_training"
+          className="block text-sm font-medium text-gray-300 mb-2"
+        >
+          Previous Training Experience
+        </label>
+        <select
+          id="previous_training"
+          {...register("previous_training")}
+          className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all duration-200"
+        >
+          <option value="">Select your experience</option>
+          {previousTrainingOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.name}
+            </option>
+          ))}
+        </select>
+        {errors.previous_training && (
+          <p className="text-red-400 text-sm mt-2">
+            {errors.previous_training.message}
+          </p>
+        )}
+      </div>
+
+      <div className="backdrop-blur-xl bg-gray-800/40 rounded-2xl p-6 border border-gray-700/30">
+        <label
+          htmlFor="neat"
+          className="block text-sm font-medium text-gray-300 mb-2"
+        >
+          Activity Level (Non-exercise)
+        </label>
+        <select
+          id="neat"
+          {...register("neat")}
+          className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all duration-200"
+        >
+          <option value="">Select your activity level</option>
+          {neatOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.name}
+            </option>
+          ))}
+        </select>
+        {errors.neat && (
+          <p className="text-red-400 text-sm mt-2">{errors.neat.message}</p>
+        )}
+      </div>
+
+      <div className="backdrop-blur-xl bg-gray-800/40 rounded-2xl p-6 border border-gray-700/30">
+        <label className="block text-sm font-medium text-gray-300 mb-2">
+          Weekly Exercise Hours
+        </label>
+        <input
+          id="exercise_hours"
+          type="number"
+          {...register("exercise_hours", { valueAsNumber: true })}
+          className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all duration-200"
+          placeholder="Hours per week"
+        />
+        {errors.exercise_hours && (
+          <p className="text-red-400 text-sm mt-2">
+            {errors.exercise_hours.message}
+          </p>
+        )}
+      </div>
+    </div>
   );
 };
 

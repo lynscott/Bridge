@@ -15,9 +15,29 @@ export default {
       spacing: {
         'safe': 'env(safe-area-inset-top)',
       },
-  		colors: {}
+  		colors: {},
+      keyframes: {
+        shimmer: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' }
+        }
+      },
+      animation: {
+        'gradient-x': 'gradient-x 15s ease infinite',
+        'wave': 'wave 10s ease-in-out infinite',
+        shimmer: 'shimmer 2s infinite linear'
+
+      },
   	}
   },
-  plugins: [require("tailwindcss-animate")],
+  variants: {
+    extend: {
+      display: ['group-hover', 'group-active']
+    }
+  },
+  plugins: [
+    require("tailwindcss-animate"),
+    require('tailwind-scrollbar'),
+  ],
 }
 

@@ -1,11 +1,9 @@
-// mod candle;
 use anyhow::Result;
-use dotenv::dotenv;
+mod commands;
+use commands::generate_macros;
 use keyring::Entry;
-use langchain_rust::llm::OpenAIConfig;
-use langchain_rust::{language_models::llm::LLM, llm::openai::OpenAI};
-use std::env;
 
+use std::env;
 const SERVICE_NAME: &str = "tru-fit-tauri";
 const ACCOUNT_NAME: &str = "user_token";
 
@@ -23,31 +21,23 @@ fn get_token() -> Result<String, String> {
 }
 
 #[tauri::command]
-async fn generate_text(prompt: String) -> Result<String, String> {
-    dotenv().ok();
-    let api_key = env::var("OPENAI_API_KEY").map_err(|_| "OPENAI_API_KEY not set".to_string())?;
-
-    tauri::async_runtime::spawn(async move {
-        let open_ai = OpenAI::default().with_model("gpt-4o-mini").with_config(
-            OpenAIConfig::default().with_api_key(&api_key), //if you want to set you open ai key,
-        );
-
-        let response = open_ai.invoke(&prompt).await.unwrap();
-        println!("{}", response);
-        Ok(response)
-    })
-    .await
-    .map_err(|e| e.to_string())?
+async fn verify_token() -> Result<bool, String> {
+    match get_token() {
+        Ok(token) => Ok(!token.is_empty()),
+        Err(_) => Ok(false),
+    }
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_fs::init())
         .invoke_handler(tauri::generate_handler![
             save_token,
             get_token,
-            generate_text
+            generate_macros,
+            verify_token
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

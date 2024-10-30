@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		175B55697B34EA5A19E8FE3B /* libapp.a in Resources */ = {isa = PBXBuildFile; fileRef = 3508D49A5FBB9AB620ADC8E5 /* libapp.a */; };
 		1ECF3A6B51C81721E254159E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E83A738017BD12BE71F2558 /* CoreGraphics.framework */; };
 		31FEB41FAC2872F160A07E52 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 012D4B804B259BE2DB8907CF /* Security.framework */; };
 		4095FB164F72EA449F901496 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 23508247658159812719A840 /* assets */; };
@@ -31,7 +30,6 @@
 		23508247658159812719A840 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = assets; sourceTree = SOURCE_ROOT; };
 		2BB928E8FFBA0B06E759DFFF /* tru-fit-tauri_iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "tru-fit-tauri_iOS.entitlements"; sourceTree = "<group>"; };
 		2F43DA993E10078048F25637 /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
-		3508D49A5FBB9AB620ADC8E5 /* libapp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libapp.a; sourceTree = "<group>"; };
 		45149618DC79D6A0B1468957 /* bindings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bindings.h; sourceTree = "<group>"; };
 		53E0F862324F0BA1323610CF /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		5961DDF0AF56581F2158D630 /* libapp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libapp.a; sourceTree = "<group>"; };
@@ -41,6 +39,7 @@
 		96764F33D72AF9C823E43D27 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9E9A0BCF515A7C9F41443384 /* chains.rs */ = {isa = PBXFileReference; lastKnownFileType = text; path = chains.rs; sourceTree = "<group>"; };
 		A0A0E7F35227A008F1C377F0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		A1685A26946A9BF8C9181E6C /* mod.rs */ = {isa = PBXFileReference; lastKnownFileType = text; path = mod.rs; sourceTree = "<group>"; };
 		A45F9F21CE47F96A6E8E3FAD /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		EFDE2A0C09E6F23FFB81883B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		F04294DB87279068B345F988 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
@@ -78,7 +77,6 @@
 		14D732E68C937CA806C66862 /* Externals */ = {
 			isa = PBXGroup;
 			children = (
-				AF40DF7709C3DCB517B2DF7E /* arm64-sim */,
 			);
 			path = Externals;
 			sourceTree = "<group>";
@@ -89,14 +87,6 @@
 				189774501C7BB328A26A622A /* tru-fit-tauri.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		2BC4A5A285AE8EC2DCCCB806 /* debug */ = {
-			isa = PBXGroup;
-			children = (
-				3508D49A5FBB9AB620ADC8E5 /* libapp.a */,
-			);
-			path = debug;
 			sourceTree = "<group>";
 		};
 		2F343E3580487AC127106C34 /* bindings */ = {
@@ -115,6 +105,7 @@
 				0CEADFCC3BF3FB1544505A95 /* lib.rs */,
 				F0BE460AE6D65260B69D2F63 /* llm_example.rs */,
 				641A47D1DFCDDC956C9E14FE /* main.rs */,
+				A017BFDA8F884E9434E2FB1A /* commands */,
 			);
 			name = src;
 			path = ../../src;
@@ -137,12 +128,12 @@
 			path = Sources;
 			sourceTree = "<group>";
 		};
-		AF40DF7709C3DCB517B2DF7E /* arm64-sim */ = {
+		A017BFDA8F884E9434E2FB1A /* commands */ = {
 			isa = PBXGroup;
 			children = (
-				2BC4A5A285AE8EC2DCCCB806 /* debug */,
+				A1685A26946A9BF8C9181E6C /* mod.rs */,
 			);
-			path = "arm64-sim";
+			path = commands;
 			sourceTree = "<group>";
 		};
 		E56AFC59BFD5F43FE9BD6065 /* Frameworks */ = {
@@ -230,7 +221,6 @@
 				B0D63B145470FEB373C5B47F /* Assets.xcassets in Resources */,
 				676280161FCE461BE2627E0A /* LaunchScreen.storyboard in Resources */,
 				4095FB164F72EA449F901496 /* assets in Resources */,
-				175B55697B34EA5A19E8FE3B /* libapp.a in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -340,7 +330,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "tru-fit-tauri_iOS/tru-fit-tauri_iOS.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = B5ASV75VPG;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphoneos*]" = "arm64-sim x86_64";
@@ -394,7 +383,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "tru-fit-tauri_iOS/tru-fit-tauri_iOS.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = B5ASV75VPG;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphoneos*]" = "arm64-sim x86_64";

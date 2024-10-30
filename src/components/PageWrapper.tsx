@@ -1,15 +1,18 @@
 import React from "react";
+import { LoadingScreen } from "./LoadingSpinner";
 
 interface PageWrapperProps {
   children: React.ReactNode;
+  loading?: boolean;
 }
 
-const PageWrapper: React.FC<PageWrapperProps> = ({ children }) => {
+const PageWrapper: React.FC<PageWrapperProps> = ({
+  children,
+  loading = false,
+}) => {
   return (
-    <div className="flex flex-col h-full">
-      <main className="flex-grow p-4 bg-gray-900 text-white overflow-auto">
-        {children}
-      </main>
+    <div className="min-h-screen relative">
+      {loading ? <LoadingScreen fullScreen={false} /> : children}
     </div>
   );
 };

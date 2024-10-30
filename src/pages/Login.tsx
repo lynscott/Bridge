@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { supabase } from "../lib/supabaseClient.ts";
 import { motion } from "framer-motion";
 import { saveTokenToSecureStorage } from "../utils/storage";
 import { useNavigate } from "react-router-dom";
 import { AnimatedBackground } from "../components/AnimatedBackground";
+import { verifyToken } from "../lib/supabaseClient.ts";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -40,6 +41,17 @@ const Login: React.FC = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const checkToken = async () => {
+      const isValid = await verifyToken();
+      if (isValid) {
+        navigate("/home");
+      }
+    };
+
+    checkToken();
+  }, [navigate]);
 
   return (
     <AnimatedBackground>
@@ -116,7 +128,7 @@ const Login: React.FC = () => {
           {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
           <button
             onClick={() => setIsSignUp(!isSignUp)}
-            className="w-full text-teal-300 mt-6 text-center hover:underline"
+            className="w-full text-teal-800 mt-6 text-center hover:underline"
           >
             {isSignUp
               ? "Already have an account? Log in"

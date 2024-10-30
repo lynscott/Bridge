@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -12,6 +12,9 @@ import Home from "./pages/Home";
 import Nutrition from "./pages/Nutrition";
 import Settings from "./pages/Settings";
 import Navbar from "./components/Navbar";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider, useAuth } from "./AuthContext";
+import { supabase } from "./lib/supabaseClient";
 import "./App.css";
 
 const pageVariants = {
@@ -24,8 +27,33 @@ const pageTransition = {
   duration: 0.4,
 };
 
+const LoadingSpinner = () => (
+  <div className="flex justify-center items-center h-[calc(100vh-64px)] pt-16">
+    <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+  </div>
+);
+
 const AnimatedRoutes = () => {
   const location = useLocation();
+  const { loading } = useAuth();
+
+  useEffect(() => {
+    // Enable realtime functionality
+    supabase
+      .channel("custom-all-channel")
+      .on("postgres_changes", { event: "*", schema: "public" }, (payload) => {
+        console.log("Change received!", payload);
+      })
+      .subscribe();
+
+    return () => {
+      supabase.channel("custom-all-channel").unsubscribe();
+    };
+  }, []);
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <AnimatePresence mode="wait">
@@ -39,6 +67,7 @@ const AnimatedRoutes = () => {
               exit="out"
               variants={pageVariants}
               transition={pageTransition}
+              className="safe-area-content"
             >
               <SplashScreen />
             </motion.div>
@@ -53,6 +82,7 @@ const AnimatedRoutes = () => {
               exit="out"
               variants={pageVariants}
               transition={pageTransition}
+              className="safe-area-content"
             >
               <Login />
             </motion.div>
@@ -61,15 +91,18 @@ const AnimatedRoutes = () => {
         <Route
           path="/home"
           element={
-            <motion.div
-              initial="initial"
-              animate="in"
-              exit="out"
-              variants={pageVariants}
-              transition={pageTransition}
-            >
-              <Home />
-            </motion.div>
+            <ProtectedRoute>
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+                className="safe-area-content"
+              >
+                <Home />
+              </motion.div>
+            </ProtectedRoute>
           }
         />
         <Route
@@ -81,6 +114,7 @@ const AnimatedRoutes = () => {
               exit="out"
               variants={pageVariants}
               transition={pageTransition}
+              className="safe-area-content"
             >
               <Nutrition />
             </motion.div>
@@ -95,6 +129,7 @@ const AnimatedRoutes = () => {
               exit="out"
               variants={pageVariants}
               transition={pageTransition}
+              className="safe-area-content"
             >
               <Settings />
             </motion.div>
@@ -107,14 +142,16 @@ const AnimatedRoutes = () => {
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <div className="flex flex-col h-screen bg-gray-900 text-white">
-        <Navbar />
-        <main className="flex-grow overflow-hidden">
-          <AnimatedRoutes />
-        </main>
-      </div>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <div className="flex flex-col h-screen bg-gray-900 text-white safe-area-container">
+          <Navbar />
+          <main className="flex-grow overflow-auto safe-area-main">
+            <AnimatedRoutes />
+          </main>
+        </div>
+      </Router>
+    </AuthProvider>
   );
 };
 

@@ -62,6 +62,9 @@ export default defineConfig(function () { return __awaiter(void 0, void 0, void 
                         // 3. tell vite to ignore watching `src-tauri`
                         ignored: ["**/src-tauri/**"],
                     },
+                    css: {
+                        postcss: './postcss.config.js',
+                    },
                 }
             })];
     });

@@ -1,5 +1,44 @@
-import { invoke } from "@tauri-apps/api/core";
+// import { invoke } from "@tauri-apps/api/core";
 import React, { useState } from "react";
+import { ChatOpenAI } from "@langchain/openai";
+import { HumanMessage } from "@langchain/core/messages";
+import { invoke } from "@tauri-apps/api/core";
+import { Command } from "@tauri-apps/plugin-shell";
+import { set } from "zod";
+
+import { RemoteRunnable } from "@langchain/core/runnables/remote";
+
+// import { createQueryGraph } from "./naas/createQueries";
+// import { testMacros } from "./naas/utils";
+
+const testPrompt = `
+    For the given macros, cuisine and diet preferences, create 5 dish templates that include:
+    - The target macro-nutrients for each dish to adhere to
+    - An inviting and delightful name that describes the meal without overselling it
+    - Some ingredients that would be typical in the dish, these should be USDA ingredients
+    - A breakfast, lunch, dinner, dish, and two snack dishes
+
+    Ideally the sum of macro-nutrients for the meal adds up to the total macro-nutrients given.
+    Return your results as a a list of JSON objects
+
+    Values:
+    Calories ${1895} kcal
+    Protein ${50}g
+    Fats ${75}g
+    Carbs ${200}g
+    Max Saturated Fats ${25}g
+    Max Sodium ${2000}mg
+
+
+    Preferences:
+    - Dairy free
+    - Cajun, American, & Chinese are preferred cuisine types.
+    - Difficulty level: intermediate
+    - Max Cooking time: 30 minutes
+
+    Return your answer as a list of JSON objects.
+    {dishes: [ {} } }
+`;
 
 const LLMComponent: React.FC = () => {
   const [prompt, setPrompt] = useState("");
@@ -9,8 +48,16 @@ const LLMComponent: React.FC = () => {
   const handleQuery = async () => {
     setLoading(true);
     try {
-      const result = await invoke<string>("generate_text", { prompt });
-      setResponse(result);
+      // invoke("generate_text", { prompt }).then((res) =>
+      //   setResponse(res as string)
+      // );
+      const chain = new RemoteRunnable({
+        url: `http://localhost:8000/chat/`,
+      });
+      const result = await chain.invoke(testPrompt);
+      const parsed = JSON.parse((result as any).content);
+      console.log(parsed);
+      setResponse(parsed.dishes[0].name);
     } catch (error) {
       console.error("Error querying LLM:", error);
       setResponse("An error occurred while processing your request.");
