@@ -4580,6 +4580,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tauri-plugin-record-video"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "tauri",
+ "tauri-plugin",
+ "thiserror",
+]
+
+[[package]]
 name = "tauri-plugin-shell"
 version = "2.0.0-rc.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5057,6 +5067,7 @@ dependencies = [
  "tauri",
  "tauri-build",
  "tauri-plugin-fs",
+ "tauri-plugin-record-video",
  "tauri-plugin-shell",
  "tokenizers",
 ]

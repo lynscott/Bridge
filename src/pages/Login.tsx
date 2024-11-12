@@ -23,7 +23,7 @@ const Login: React.FC = () => {
         ? await supabase.auth.signUp({ email, password })
         : await supabase.auth.signInWithPassword({ email, password });
 
-      if (error) throw error;
+      if (error) console.log(error);
       if (data?.session?.access_token) {
         await saveTokenToSecureStorage(data.session.access_token);
         navigate("/home");

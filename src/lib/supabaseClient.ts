@@ -52,3 +52,19 @@ export async function getCurrentUser(): Promise<User | undefined> {
     return undefined
   }
 }
+
+export const getNutritionProfile = async (userId: string) => {
+  const { data, error } = await supabase
+    .from('nutrition_intake')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single()
+
+  if (error) {
+    throw error
+  }
+
+  return data
+}

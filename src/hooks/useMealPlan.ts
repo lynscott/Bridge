@@ -12,6 +12,7 @@ export function useMealPlanRealtime(mealPlanId: string) {
   useEffect(() => {
     const realtimeService = RealtimeService.getInstance();
     let isSubscribed = true;
+    console.log(mealPlanId, "mealPlanId");
 
     const loadMealPlan = async () => {
       try {

@@ -12,9 +12,13 @@ import Home from "./pages/Home";
 import Nutrition from "./pages/Nutrition";
 import Settings from "./pages/Settings";
 import Navbar from "./components/Navbar";
+import MealPlanView from "./components/MealPlanView";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Mobility from "./pages/Mobility";
 import { AuthProvider, useAuth } from "./AuthContext";
 import { supabase } from "./lib/supabaseClient";
+
+// import { ScrollRestoration } from "react-router-dom";
 import "./App.css";
 
 const pageVariants = {
@@ -24,7 +28,8 @@ const pageVariants = {
 };
 
 const pageTransition = {
-  duration: 0.4,
+  duration: 0.3,
+  ease: "easeInOut",
 };
 
 const LoadingSpinner = () => (
@@ -35,7 +40,7 @@ const LoadingSpinner = () => (
 
 const AnimatedRoutes = () => {
   const location = useLocation();
-  const { loading } = useAuth();
+  const { loading, user } = useAuth();
 
   useEffect(() => {
     // Enable realtime functionality
@@ -119,7 +124,40 @@ const AnimatedRoutes = () => {
               <Nutrition />
             </motion.div>
           }
+        >
+          <Route index element={null} />
+          <Route
+            path="meal-plan"
+            element={
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <MealPlanView />
+              </motion.div>
+            }
+          />
+        </Route>
+
+        <Route
+          path="/mobility"
+          element={
+            <motion.div
+              initial="initial"
+              animate="in"
+              exit="out"
+              variants={pageVariants}
+              transition={pageTransition}
+              className="safe-area-content"
+            >
+              <Mobility />
+            </motion.div>
+          }
         />
+
         <Route
           path="/settings"
           element={
@@ -144,6 +182,7 @@ const App: React.FC = () => {
   return (
     <AuthProvider>
       <Router>
+        {/* <ScrollRestoration /> TODO decide on data router or TanStack */}
         <div className="flex flex-col h-screen bg-gray-900 text-white safe-area-container">
           <Navbar />
           <main className="flex-grow overflow-auto safe-area-main">

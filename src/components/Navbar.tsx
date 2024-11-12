@@ -2,6 +2,9 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { AiOutlineHome, AiOutlineSetting } from "react-icons/ai";
 import { IoNutritionOutline } from "react-icons/io5";
+import { GrYoga } from "react-icons/gr";
+import { GiHotMeal } from "react-icons/gi";
+
 import { motion } from "framer-motion";
 
 const Navbar: React.FC = () => {
@@ -81,7 +84,7 @@ const Navbar: React.FC = () => {
               whileTap={{ scale: 0.95 }}
             >
               <div className="flex items-center justify-center w-6 h-6">
-                <IoNutritionOutline
+                <GiHotMeal
                   size={24}
                   className={`transition-all duration-300 ${
                     isActive("/nutrition")
@@ -98,6 +101,38 @@ const Navbar: React.FC = () => {
                 }`}
               >
                 Nutrition
+              </span>
+            </motion.div>
+          </Link>
+
+          <Link
+            to="/mobility"
+            className={`flex-1 flex flex-col items-center justify-center p-2 transition-all duration-300 ${
+              isActive("/nutrition") ? "text-teal-400" : "text-gray-400"
+            }`}
+          >
+            <motion.div
+              className="flex flex-col items-center justify-center w-full"
+              whileTap={{ scale: 0.95 }}
+            >
+              <div className="flex items-center justify-center w-6 h-6">
+                <GrYoga
+                  size={24}
+                  className={`transition-all duration-300 ${
+                    isActive("/mobility")
+                      ? "text-teal-400 filter drop-shadow-[0_0_2px_rgba(96,165,250,0.6)]"
+                      : "text-gray-400"
+                  }`}
+                />
+              </div>
+              <span
+                className={`text-xs mt-1 font-medium text-center transition-all duration-300 ${
+                  isActive("/mobility")
+                    ? "text-teal-400 filter drop-shadow-[0_0_2px_rgba(96,165,250,0.6)]"
+                    : "text-gray-400"
+                }`}
+              >
+                Mobility
               </span>
             </motion.div>
           </Link>

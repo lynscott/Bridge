@@ -30,6 +30,7 @@ keyring = { version = "3", features = [
 ] }
 dotenv = "0.15.0"
 langchain-rust = { git = "https://github.com/Abraxas-365/langchain-rust.git" }
+tauri-plugin-record-video = { path = "../tauri-plugin-record-video" }
 
 # candle-transformers = { git = "https://github.com/huggingface/candle.git", version = "0.7.1" }
 # candle-nn = { git = "https://github.com/huggingface/candle.git", version = "0.7.1" }

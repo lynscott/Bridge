@@ -1,13 +1,4 @@
 // src/types/nutrition.ts
-export interface Nutrient {
-  phosphorus?: number;
-  potassium?: number;
-  sodium?: number;
-  fats?: number;
-  protein?: number;
-  carbohydrates?: number;
-  saturated_fats?: number;
-}
 
 export interface MacroTotals {
   protein: number;
@@ -18,35 +9,41 @@ export interface MacroTotals {
   saturated_fats: number;
 }
 
-export interface Ingredient {
-  id: string;
-  name: string;
-  description?: string;
-  fdcId: number;
-  nutrients: Nutrient;
-  amount: number;
-  unit: string;
+
+export interface Nutrients {
+  phosphorus: number;
+  potassium: number;
+  sodium: number;
+  fats: number;
+  protein: number;
+  carbohydrates: number;
   calories: number;
 }
 
-export interface Meal {
-  id: string;
+export interface Ingredient {
+  name: string;
+  description?: string;
+  fdc_id: string;
+  amount: string;
+  unit: string;
+  nutrients: Nutrients;
+}
+
+export interface Recipe {
   name: string;
   type: 'breakfast' | 'lunch' | 'dinner' | 'snack';
-  description?: string;
+  flavor_profile: string;
+  description: string;
   instructions: string[];
   cooking_time: number;
-  image_url?: string;
-  total_macros: MacroTotals;
+  image_url: string;
+  total_macros: Nutrients;
   ingredients: Ingredient[];
 }
 
 export interface MealPlan {
-  id: string;
-  user_id: string;
-  intake_result_id: string;
   name: string;
-  description?: string;
-  total_macros: MacroTotals;
-  meals: Meal[];
+  description: string;
+  total_macros: Nutrients;
+  meals: Recipe[];
 }

@@ -13,7 +13,9 @@ import {
 } from "../components/NutritionForm/FormSchema";
 import { invoke } from "@tauri-apps/api/core";
 import IntakeResults from "../components/NutritionForm/IntakeResults";
+import { MealPlanView } from "../components/MealPlanView";
 import { motion, AnimatePresence } from "framer-motion";
+import { Outlet, useLocation } from "react-router-dom";
 
 export type NutritionFormInputs = z.infer<typeof NutritionSchema>;
 
@@ -54,6 +56,21 @@ const NutritionForm: React.FC = () => {
   const [showForm, setShowForm] = useState<boolean>(false);
   const [nutritionData, setNutritionData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [mealsProcessing, setMealsProcessing] = useState<boolean>(false);
+  const location = useLocation();
+  const showNutritionContent = location.pathname === "/nutrition";
+
+  useEffect(() => {
+    // Check if meals are being processed
+    const submitSuccessCheck = localStorage.getItem("mealsProcessing");
+    // const storedMealPlanId = localStorage.getItem("mealPlanId");
+
+    if (submitSuccessCheck === "true") {
+      setMealsProcessing(true);
+    } else {
+      fetchLatestNutritionData();
+    }
+  }, []);
 
   const {
     control,
@@ -199,130 +216,135 @@ const NutritionForm: React.FC = () => {
 
   return (
     <PageWrapper loading={loading}>
-      <div className="flex items-center justify-center min-h-full px-0 py-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-xl space-y-4 backdrop-blur-lg bg-gray-800/40 rounded-2xl border border-gray-700/30 shadow-2xl p-4"
-        >
-          {!showForm && nutritionData ? (
-            <IntakeResults
-              nutritionData={nutritionData}
-              startOver={handleNewForm}
-            />
-          ) : (
-            <>
-              <motion.div
-                className="text-center"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.2 }}
-              >
-                <h2 className="text-2xl font-bold text-white tracking-tight">
-                  {stepTitles[step as keyof typeof stepTitles]}
-                </h2>
-              </motion.div>
-
-              <ProgressBridge progress={progress} />
-
-              <AnimatePresence mode="wait">
-                <motion.form
-                  key={step}
-                  onSubmit={handleSubmit(onSubmit)}
-                  className="space-y-4"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <div className="w-full">
-                    {step === 1 && (
-                      <Step1Form
-                        register={register}
-                        control={control}
-                        errors={errors}
-                      />
-                    )}
-                    {step === 2 && (
-                      <Step2Form register={register} errors={errors} />
-                    )}
-                    {step === 3 && (
-                      <Step3Form
-                        register={register}
-                        errors={errors}
-                        control={control}
-                      />
-                    )}
-                  </div>
-
-                  <motion.div
-                    className="flex items-center justify-between space-x-3 pt-4"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                  >
-                    {step > 1 && (
-                      <motion.button
-                        type="button"
-                        onClick={handlePreviousStep}
-                        className="flex-1 py-2.5 px-4 border border-gray-600 text-sm font-medium rounded-xl text-white bg-transparent hover:bg-gray-700/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        Previous
-                      </motion.button>
-                    )}
-                    {step < totalSteps && (
-                      <motion.button
-                        type="button"
-                        onClick={handleNextStep}
-                        className="flex-1 py-2.5 px-4 text-sm font-medium rounded-xl text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        Next
-                      </motion.button>
-                    )}
-                    {step === totalSteps && (
-                      <motion.button
-                        type="submit"
-                        disabled={loading}
-                        className="flex-1 py-2.5 px-4 text-sm font-medium rounded-xl text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 transition-all duration-200"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        {loading ? (
-                          <div className="flex items-center justify-center">
-                            <div className="w-4 h-4 border-t-2 border-white rounded-full animate-spin mr-2" />
-                            Processing...
-                          </div>
-                        ) : (
-                          "Submit"
-                        )}
-                      </motion.button>
-                    )}
-                  </motion.div>
-                </motion.form>
-              </AnimatePresence>
-            </>
-          )}
-
-          {!loading && showForm && (
-            <>
-              {Object.keys(errors).length > 0 && (
-                <motion.p
-                  className="mt-2 text-red-500 text-center text-sm"
+      <Outlet />
+      {showNutritionContent && (
+        <div className="flex items-center justify-center min-h-full px-0 py-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="w-full max-w-xl space-y-4 backdrop-blur-lg bg-gray-800/40 rounded-2xl border border-gray-700/30 shadow-2xl p-4"
+          >
+            {mealsProcessing ? (
+              <MealPlanView />
+            ) : !showForm && nutritionData ? (
+              <IntakeResults
+                nutritionData={nutritionData}
+                startOver={handleNewForm}
+              />
+            ) : (
+              <>
+                <motion.div
+                  className="text-center"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
                 >
-                  Please fill in all required fields correctly.
-                  {JSON.stringify(errors)}
-                </motion.p>
-              )}
-            </>
-          )}
-        </motion.div>
-      </div>
+                  <h2 className="text-2xl font-bold text-white tracking-tight">
+                    {stepTitles[step as keyof typeof stepTitles]}
+                  </h2>
+                </motion.div>
+
+                <ProgressBridge progress={progress} />
+
+                <AnimatePresence mode="wait">
+                  <motion.form
+                    key={step}
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="space-y-4"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="w-full">
+                      {step === 1 && (
+                        <Step1Form
+                          register={register}
+                          control={control}
+                          errors={errors}
+                        />
+                      )}
+                      {step === 2 && (
+                        <Step2Form register={register} errors={errors} />
+                      )}
+                      {step === 3 && (
+                        <Step3Form
+                          register={register}
+                          errors={errors}
+                          control={control}
+                        />
+                      )}
+                    </div>
+
+                    <motion.div
+                      className="flex items-center justify-between space-x-3 pt-4"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.4 }}
+                    >
+                      {step > 1 && (
+                        <motion.button
+                          type="button"
+                          onClick={handlePreviousStep}
+                          className="flex-1 py-2.5 px-4 border border-gray-600 text-sm font-medium rounded-xl text-white bg-transparent hover:bg-gray-700/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200"
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          Previous
+                        </motion.button>
+                      )}
+                      {step < totalSteps && (
+                        <motion.button
+                          type="button"
+                          onClick={handleNextStep}
+                          className="flex-1 py-2.5 px-4 text-sm font-medium rounded-xl text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200"
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          Next
+                        </motion.button>
+                      )}
+                      {step === totalSteps && (
+                        <motion.button
+                          type="submit"
+                          disabled={loading}
+                          className="flex-1 py-2.5 px-4 text-sm font-medium rounded-xl text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 transition-all duration-200"
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          {loading ? (
+                            <div className="flex items-center justify-center">
+                              <div className="w-4 h-4 border-t-2 border-white rounded-full animate-spin mr-2" />
+                              Processing...
+                            </div>
+                          ) : (
+                            "Submit"
+                          )}
+                        </motion.button>
+                      )}
+                    </motion.div>
+                  </motion.form>
+                </AnimatePresence>
+              </>
+            )}
+
+            {!loading && showForm && (
+              <>
+                {Object.keys(errors).length > 0 && (
+                  <motion.p
+                    className="mt-2 text-red-500 text-center text-sm"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                  >
+                    Please fill in all required fields correctly.
+                    {JSON.stringify(errors)}
+                  </motion.p>
+                )}
+              </>
+            )}
+          </motion.div>
+        </div>
+      )}
     </PageWrapper>
   );
 };

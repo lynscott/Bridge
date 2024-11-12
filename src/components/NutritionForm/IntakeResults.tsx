@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { NutritionProfile } from "./NutritionProfile";
 import { ActionButtons } from "./ActionButtons";
 import { MacroDescriptions } from "./MacroDescriptions";
+import { useAuth } from "../../AuthContext";
 
 interface NutritionResultsProps {
   nutritionData: any;
@@ -34,6 +35,7 @@ const NutritionResults: React.FC<NutritionResultsProps> = ({
   const [mealSuggestions, setMealSuggestions] = useState<Meal[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
 
   if (!nutritionData) {
     return <div>No nutrition data available.</div>;
@@ -78,44 +80,48 @@ const NutritionResults: React.FC<NutritionResultsProps> = ({
   const handleCreateMealQueries = async () => {
     setLoading(true);
     setError(null);
-    //TODO add userId to the query for threading
+    const real = `https://927e-38-13-9-210.ngrok-free.app/query/invoke`;
     const deviceURL = `http://localhost:8000/query/invoke`; // `https://11ae-38-13-9-210.ngrok-free.app/query/`;
     try {
-      // const chain = new RemoteRunnable({
-      //   url: deviceURL,
-      //   fetchRequestOptions: {
-      //     timeout: 240000,
-      //   },
-      // });
-      // const result = await chain.invoke({ query_prompt: mealQueryPrompt });
+      const chain = new RemoteRunnable({
+        url: deviceURL,
+      });
+      const result = await chain.invoke({
+        query_prompt: mealQueryPrompt,
+        userId: user?.id,
+      });
 
-      const controller = new AbortController();
-      const signal = controller.signal;
+      console.log(result);
+      setMealSuggestions((result as any).meal_queries);
 
-      const timeoutId = setTimeout(() => controller.abort(), 240000);
+      // const controller = new AbortController();
+      // const signal = controller.signal;
 
-      await fetch(deviceURL, {
-        method: "POST",
-        signal,
-        body: JSON.stringify({ input: { query_prompt: mealQueryPrompt } }),
-      })
-        .then(async (response) => {
-          clearTimeout(timeoutId);
-          const { output } = await response.json();
-          console.log(output.meal_queries[0]);
-          setMealSuggestions(output.meal_queries);
-          localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify(output.meal_queries)
-          );
+      // const timeoutId = setTimeout(() => controller.abort(), 240000);
 
-          // Handle response
-        })
-        .catch((error) => {
-          clearTimeout(timeoutId);
-          console.log(error);
-          // Handle timeout error
-        });
+      // await fetch(real, {
+      //   method: "POST",
+      //   signal,
+      //   body: JSON.stringify({
+      //     input: { query_prompt: mealQueryPrompt },
+      //   }),
+      // })
+      //   .then(async (response) => {
+      //     clearTimeout(timeoutId);
+      //     const { output } = await response.json();
+      //     setMealSuggestions(output.meal_queries);
+      //     localStorage.setItem(
+      //       STORAGE_KEY,
+      //       JSON.stringify(output.meal_queries)
+      //     );
+
+      //     // Handle response
+      //   })
+      //   .catch((error) => {
+      //     clearTimeout(timeoutId);
+      //     console.log(error);
+      //     // Handle timeout error
+      //   });
       // const output = (result as any).meal_queries;
       // console.log(output);
       // setMealSuggestions(output.dishes);

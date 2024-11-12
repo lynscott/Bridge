@@ -2,6 +2,9 @@ use anyhow::Result;
 mod commands;
 use commands::generate_macros;
 use keyring::Entry;
+use tauri_plugin_record_video;
+
+// tauri::ios_plugin_binding!(init_plugin_video_recorder);
 
 use std::env;
 const SERVICE_NAME: &str = "tru-fit-tauri";
@@ -33,6 +36,8 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_record_video::init())
+        // .plugin(tauri_plugin_video_recorder::init())
         .invoke_handler(tauri::generate_handler![
             save_token,
             get_token,

@@ -1,6 +1,10 @@
 // MealSuggestions.tsx
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useScrollReset } from "../hooks/useScrollReset";
+import { RemoteRunnable } from "@langchain/core/runnables/remote";
+import { useAuth } from "../AuthContext";
+import { useNavigate } from "react-router-dom";
 
 interface Macros {
   calories: number;
@@ -38,6 +42,11 @@ const MealSuggestions: React.FC<MealSuggestionsProps> = ({ meals }) => {
   const [currentMealIndex, setCurrentMealIndex] = useState(0);
   const [selectedFeedback, setSelectedFeedback] = useState<string[]>([]);
   const [isOverviewMode, setIsOverviewMode] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
   const nextMeal = () => {
     setCurrentMealIndex((prevIndex) => (prevIndex + 1) % meals.length);
@@ -63,13 +72,40 @@ const MealSuggestions: React.FC<MealSuggestionsProps> = ({ meals }) => {
     setSelectedFeedback([]);
   };
 
-  const toggleOverviewMode = () => {
-    setIsOverviewMode(!isOverviewMode);
-  };
-
   const selectMealFromOverview = (index: number) => {
     setCurrentMealIndex(index);
     setIsOverviewMode(false);
+  };
+
+  const finalizeMealPlan = async () => {
+    if (!user) {
+      console.error("User not logged in? " + user);
+      return;
+    }
+    const real = "https://927e-38-13-9-210.ngrok-free.app/finalize_plan";
+    const local = `http://localhost:8000/finalize_plan`;
+    try {
+      const chain = new RemoteRunnable({
+        url: local,
+      });
+      setIsLoading(true);
+
+      await chain.invoke({
+        meal_queries: meals,
+        userId: user?.id,
+      });
+
+      // Set localStorage state
+      localStorage.setItem("mealsProcessing", "true");
+
+      navigate("/nutrition/meal-plan");
+    } catch (err) {
+      console.error("Error finalizing meal plan:", err);
+      // Show error message to user
+      setError("Failed to finalize meal plan. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const currentMeal = meals[currentMealIndex];
@@ -169,17 +205,23 @@ const MealSuggestions: React.FC<MealSuggestionsProps> = ({ meals }) => {
               className="flex flex-col items-center gap-3 mt-8 pb-8"
             >
               <button
-                onClick={() => {
-                  // Placeholder function for API call
-                  console.log("Finalizing meal plan...");
-                }}
+                onClick={finalizeMealPlan}
+                disabled={isLoading}
                 className="bg-gradient-to-r from-green-500 to-green-600 
                          hover:from-green-600 hover:to-green-700 text-white 
                          font-semibold py-4 px-8 rounded-xl transition-all 
                          duration-200 shadow-lg hover:shadow-xl 
-                         shadow-green-500/20 text-lg"
+                         shadow-green-500/20 text-lg
+                         disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Lock These In 🔒
+                {isLoading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 border-t-2 border-white rounded-full animate-spin" />
+                    Processing...
+                  </div>
+                ) : (
+                  "Lock These In 🔒"
+                )}
               </button>
               <span className="text-gray-400 text-sm max-w-md text-center">
                 Happy with your selections? Click above to finalize meals and
